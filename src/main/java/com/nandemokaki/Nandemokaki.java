@@ -12,6 +12,11 @@ import org.springframework.core.annotation.Order;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
+/**
+ * Main boot
+ * @author KIM
+ *
+ */
 @Configuration
 @ComponentScan
 @EnableAutoConfiguration
