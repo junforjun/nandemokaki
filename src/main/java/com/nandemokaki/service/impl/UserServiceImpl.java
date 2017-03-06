@@ -39,8 +39,6 @@ public class UserServiceImpl implements UserService {
 		userDetails.setUsername(username);
 		userDetails.setPassword(user.userPass);
 
-		System.out.println(userDetails.getPassword());
-
 		userDetails.setAccountNonExpired(true);
 		userDetails.setAccountNonLocked(true);
 		userDetails.setCredentialsNonExpired(true);

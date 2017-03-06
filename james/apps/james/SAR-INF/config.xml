@@ -80,9 +80,11 @@
 
       <!-- The inbox repository is the location for users inboxes -->
       <!-- Default setting: file based repository - enter path ( use  "file:///" for absolute) -->
-      <!-- <inboxRepository>
+      <!--
+      <inboxRepository>
          <repository destinationURL="file://var/mail/inboxes/" type="MAIL"/>
-      </inboxRepository> -->
+      </inboxRepository>
+      -->
 
       <!-- Alternative inbox repository definition for DB use. -->
       <!-- The format for the destinationURL is "db://<data-source>/<table>" -->
@@ -211,7 +213,7 @@
          <!-- Check attachment extensions for possible viruses -->
          <!-- The "-z" option requests the check to be non-recursively applied -->
          <!-- to the contents of any attached '*.zip' file. -->
-         
+
          <mailet match="AttachmentFileNameIs=-d -z *.exe *.com *.bat *.cmd *.pif *.scr *.vbs *.avi *.mp3 *.mpeg *.shs" class="Bounce" onMatchException="error">
             <inline>heads</inline>
             <attachment>none</attachment>
@@ -226,7 +228,7 @@ Regards, Postmaster XXX.YYY
 .....................................
             </notice>
          </mailet>
-         
+
 
          <!-- Whitelist Management -->
          <!-- Manages for each local user a "white list" of remote addresses whose messages -->

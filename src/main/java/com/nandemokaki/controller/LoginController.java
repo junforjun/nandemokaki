@@ -41,8 +41,6 @@ public class LoginController {
 
 			user = userService.readUser(login.getUsername());
 		} catch (AuthenticationException e) {
-			// TODO 自動生成された catch ブロック
-			e.printStackTrace();
 			throw e;
 		}
 
