@@ -12,7 +12,9 @@ import org.springframework.security.web.context.HttpSessionSecurityContextReposi
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.google.gson.Gson;
 import com.nandemokaki.config.AuthenticationToken;
 import com.nandemokaki.model.Login;
 import com.nandemokaki.model.UserInfo;
@@ -28,7 +30,8 @@ public class LoginController {
 	AuthenticationManager authenticationManager;
 
 	@RequestMapping(value="/login", method=RequestMethod.POST,produces = "text/plain;charset=UTF-8")
-	public AuthenticationToken login(Login login, HttpSession session) {
+	@ResponseBody
+	public String login(Login login, HttpSession session) {
 
 		UserInfo user = null;
 		try {
@@ -44,7 +47,7 @@ public class LoginController {
 			throw e;
 		}
 
-        return new AuthenticationToken(user.userId, userService.getAuthorities(user.userId), session.getId());
+        return new Gson().toJson(new AuthenticationToken(user.userId, userService.getAuthorities(user.userId), session.getId()));
 
 
 	}

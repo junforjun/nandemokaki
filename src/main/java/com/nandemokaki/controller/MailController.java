@@ -1,25 +1,26 @@
 package com.nandemokaki.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
-import com.mysema.query.jpa.JPQLQuery;
 import com.mysema.query.jpa.impl.JPAQuery;
-import com.nandemokaki.model.Inbox;
+import com.nandemokaki.model.MailContent;
 import com.nandemokaki.model.QInbox;
 import com.nandemokaki.model.UserInfo;
 import com.nandemokaki.service.MailService;
+import com.nandemokaki.util.DateUtil;
+import com.nandemokaki.util.UserUtil;
 
 @RestController
 public class MailController {
@@ -29,33 +30,31 @@ public class MailController {
 	@Autowired
 	private MailService mailService;
 
-	@RequestMapping(value = "/login/getmail", method = RequestMethod.GET)
-	@ResponseBody
-	public String getMail(HttpSession session) {
+	@RequestMapping(value = "/mail", method = RequestMethod.GET)
+	public ModelAndView mailMain(ModelAndView mov, HttpSession session) {
 
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-		UserInfo user = new UserInfo();
-		user.userId = auth.getName();
-
-
-		JPQLQuery query = new JPAQuery(em);
+		UserInfo user = UserUtil.getUser();
 
 		QInbox inbox = QInbox.inbox;
-// 		List<Inbox> InboxList = query.from(inbox).where(inbox.repositoryName.eq(auth.getName())).orderBy(inbox.lastUpdated.desc()).list(inbox);
- 		List<Inbox> InboxList = query.from(inbox).where(inbox.repositoryName.eq("test2")).orderBy(inbox.lastUpdated.desc()).list(inbox);
-
- 		InboxList.forEach(v -> System.out.println(v.messageBody));
-
-// 		MimeMessage m = new MimeMessage();
-//		if(email == null) {
-//			throw new Exception();
-//		}
+		long mailcnt = new JPAQuery(em).from(inbox).where(inbox.repositoryName.eq("test2")).orderBy(inbox.lastUpdated.desc()).count();
 
 
+		List<MailContent> mc = mailService.fetchMail(UserUtil.getUser());
 
-		return  new Gson().toJson(mailService.fetchMail(user));
+		mc.forEach(v -> {
+			v.isRead = "○";
+			v.readTime = DateUtil.dateToStr(new Date());
+		});
 
+		mov.addObject("mailcnt", mailcnt);
+		mov.addObject("mailList", mc);
+
+		return mov;
 	}
 
+	@RequestMapping(value = "/mail/get", method = RequestMethod.GET)
+	@ResponseBody
+	public String getMail(HttpSession session) {
+		return new Gson().toJson(mailService.fetchMail(UserUtil.getUser()));
+	}
 }

@@ -26,7 +26,7 @@ import com.nandemokaki.model.MailContent;
 
 public class MailUtil {
 
-	public static void fetch(String pop3Host, String storeType, String user, String password) {
+	public void fetch(String pop3Host, String storeType, String user, String password) {
 		try {
 			// create properties field
 			Properties properties = new Properties();
@@ -47,7 +47,7 @@ public class MailUtil {
 
 			// retrieve the messages from the folder in an array and print it
 			Message[] messages = emailFolder.getMessages();
-			//System.out.println("messages.length---" + messages.length);
+			// System.out.println("messages.length---" + messages.length);
 
 			List<MailContent> mailList = new ArrayList<>();
 			for (int i = 0; i < messages.length; i++) {
@@ -57,8 +57,7 @@ public class MailUtil {
 
 				writePart(message, mail);
 
-
-//				message.writeTo(System.out);
+				// message.writeTo(System.out);
 				System.out.println(mail.toString());
 
 				mailList.add(mail);
@@ -79,22 +78,11 @@ public class MailUtil {
 		}
 	}
 
-	public static void main(String[] args) {
-
-		String host = "127.0.0.1";
-		String mailStoreType = "pop3";
-		String username = "test2";
-		String password = "test2";// change accordingly
-
-		// Call method fetch
-		fetch(host, mailStoreType, username, password);
-	}
-
 	/**
 	 * This method checks for content-type based on which, it processes and
 	 * fetches the content of the message
 	 */
-	public static void writePart(Part p, MailContent mail) throws Exception {
+	public void writePart(Part p, MailContent mail) throws Exception {
 
 		if (p instanceof Message) {
 			writeEnvelope((Message) p, mail);
@@ -118,13 +106,13 @@ public class MailUtil {
 		}
 		// check if the content is a nested message
 		else if (p.isMimeType("message/rfc822")) {
-			//System.out.println("This is a Nested Message");
-			//System.out.println("---------------------------");
+			// System.out.println("This is a Nested Message");
+			// System.out.println("---------------------------");
 			writePart((Part) p.getContent(), mail);
 		}
 		// check if the content is an inline image
 		else if (p.isMimeType("image/jpeg")) {
-			//System.out.println("--------> image/jpeg");
+			// System.out.println("--------> image/jpeg");
 			Object o = p.getContent();
 
 			InputStream x = (InputStream) o;
@@ -132,7 +120,7 @@ public class MailUtil {
 			int i = 0;
 			byte[] bArray = new byte[x.available()];
 
-			//System.out.println("x.length = " + x.available());
+			// System.out.println("x.length = " + x.available());
 			while ((i = (int) ((InputStream) x).available()) > 0) {
 				int result = (int) (((InputStream) x).read(bArray));
 				if (result == -1)
@@ -142,7 +130,7 @@ public class MailUtil {
 			FileOutputStream f2 = new FileOutputStream("/tmp/image.jpg");
 			f2.write(bArray);
 		} else if (p.getContentType().contains("image/")) {
-			//System.out.println("content type" + p.getContentType());
+			// System.out.println("content type" + p.getContentType());
 			File f = new File("image" + new Date().getTime() + ".jpg");
 			DataOutputStream output = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(f)));
 			com.sun.mail.util.BASE64DecoderStream test = (com.sun.mail.util.BASE64DecoderStream) p.getContent();
@@ -154,21 +142,21 @@ public class MailUtil {
 		} else {
 			Object o = p.getContent();
 			if (o instanceof String) {
-				//System.out.println("This is a string");
-				//System.out.println("---------------------------");
-				//System.out.println((String) o);
+				// System.out.println("This is a string");
+				// System.out.println("---------------------------");
+				// System.out.println((String) o);
 			} else if (o instanceof InputStream) {
-				//System.out.println("This is just an input stream");
-				//System.out.println("---------------------------");
+				// System.out.println("This is just an input stream");
+				// System.out.println("---------------------------");
 				InputStream is = (InputStream) o;
 				is = (InputStream) o;
 				int c;
 				while ((c = is.read()) != -1)
 					System.out.write(c);
 			} else {
-				//System.out.println("This is an unknown type");
-				//System.out.println("---------------------------");
-				//System.out.println(o.toString());
+				// System.out.println("This is an unknown type");
+				// System.out.println("---------------------------");
+				// System.out.println(o.toString());
 			}
 		}
 
@@ -177,7 +165,7 @@ public class MailUtil {
 	/*
 	 * This method would print FROM,TO and SUBJECT of the message
 	 */
-	public static void writeEnvelope(Message m, MailContent mail) throws Exception {
+	public void writeEnvelope(Message m, MailContent mail) throws Exception {
 
 		mail.contentType = m.getContentType().split(";")[0];
 
