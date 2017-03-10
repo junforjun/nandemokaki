@@ -31,7 +31,7 @@ public class MailController {
 	private MailService mailService;
 
 	@RequestMapping(value = "/mail", method = RequestMethod.GET)
-	public ModelAndView mailMain(ModelAndView mov, HttpSession session) {
+	public ModelAndView mailMain(ModelAndView mov, HttpSession session) throws Exception {
 
 		UserInfo user = UserUtil.getUser();
 
@@ -54,7 +54,7 @@ public class MailController {
 
 	@RequestMapping(value = "/mail/get", method = RequestMethod.GET)
 	@ResponseBody
-	public String getMail(HttpSession session) {
+	public String getMail(HttpSession session) throws Exception {
 		return new Gson().toJson(mailService.fetchMail(UserUtil.getUser()));
 	}
 }

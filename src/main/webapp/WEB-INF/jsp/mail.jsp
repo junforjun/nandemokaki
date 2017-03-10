@@ -20,6 +20,8 @@
 
 
 <script>
+
+$(".tbtitle").hide
     $(document).ready(function(){
         $(".tbtitle").click(function(){
            alert()
@@ -28,7 +30,7 @@
 </script>
 <style>
     .tbtitle {cursor:pointer;}
-    .tbtitle .hide{display:none;}
+    .table .hide{display:none;}
 </style>
 
 
@@ -87,9 +89,12 @@
 								<th style="width: 10%">수신확인시간</th>
 							</tr>
 						</thead>
-						<tbody>
 							<c:forEach var="it" items="${mailList}" varStatus="status">
-								<tr class="tbtitle">
+
+							<!-- 요기!!!!!!! -->
+
+							<tbody class="cl">
+								<tr>
 									<td><input type="checkbox" /></td>
 									<td><c:out value="${it.from}" /></td>
 									<td><c:out value="${it.subject}" /></td>
@@ -97,22 +102,21 @@
 									<td><c:out value="${it.isRead}" /></td>
 									<td><c:out value="${it.readTime}" /></td>
 								</tr>
-								<tr >
+								<tr class="hide" >
 									<td></td>
 									<td colspan="5" style="border-style: outset; border-bottom-style:none;" >CC : </td>
 								</tr>
-								<tr class="inner">
+								<tr  class="hide">
 									<td></td>
 									<td colspan="5" style="border-left-style: outset; border-right-style: outset;">Attched file : </td>
 								</tr>
-								<tr class="inner">
+								<tr  class="hide">
 									<td></td>
 									<td colspan="5" style="border-style: outset; border-top-style:none;">${it.message}</td>
 
 								</tr>
-
+							</tbody>
 							</c:forEach>
-						</tbody>
 					</table>
 				</div>
 			</div>

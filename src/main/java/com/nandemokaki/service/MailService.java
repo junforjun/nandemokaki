@@ -9,7 +9,7 @@ import com.nandemokaki.model.UserInfo;
 
 @Service
 public interface MailService {
-	public List<MailContent> fetchMail(UserInfo user);
+	public List<MailContent> fetchMail(UserInfo user) throws Exception;
 
 	public void deleteMail(UserInfo user);
 

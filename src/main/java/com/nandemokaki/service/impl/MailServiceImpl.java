@@ -4,7 +4,6 @@ import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,9 +13,7 @@ import java.util.Properties;
 import javax.mail.Address;
 import javax.mail.Folder;
 import javax.mail.Message;
-import javax.mail.MessagingException;
 import javax.mail.Multipart;
-import javax.mail.NoSuchProviderException;
 import javax.mail.Part;
 import javax.mail.Session;
 import javax.mail.Store;
@@ -33,7 +30,7 @@ import com.nandemokaki.util.DateUtil;
 public class MailServiceImpl implements MailService {
 
 	@Override
-	public List<MailContent> fetchMail(UserInfo user) {
+	public List<MailContent> fetchMail(UserInfo user) throws Exception {
 		String host = "127.0.0.1";
 		String mailStoreType = "pop3";
 		String username = "test2";
@@ -83,14 +80,9 @@ public class MailServiceImpl implements MailService {
 			emailFolder.close(false);
 			store.close();
 
-		} catch (NoSuchProviderException e) {
-			e.printStackTrace();
-		} catch (MessagingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
+			throw e;
 		}
 
 		return mailList;
