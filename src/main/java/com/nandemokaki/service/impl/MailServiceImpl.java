@@ -222,6 +222,10 @@ public class MailServiceImpl implements MailService {
 				mail.cc.add(a[j].toString());
 			}
 		}
+		if ((a = m.getRecipients(Message.RecipientType.CC)) != null) {
+				mail.mailId = m.getMessageNumber();
+		}
+
 
 	}
 

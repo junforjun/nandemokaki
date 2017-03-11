@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MailContent implements Serializable {
-	public String mailId;
+	public int mailId;
 	public String from;
 	public List<String> to = new ArrayList<>();
 	public List<String> cc = new ArrayList<>();
@@ -24,10 +24,10 @@ public class MailContent implements Serializable {
 				+ ", contentType=" + contentType + ", date=" + date + ", message=" + message + ", isRead=" + isRead
 				+ ", readTime=" + readTime + "]";
 	}
-	public String getMailId() {
+	public int getMailId() {
 		return mailId;
 	}
-	public void setMailId(String mailId) {
+	public void setMailId(int mailId) {
 		this.mailId = mailId;
 	}
 	public String getFrom() {

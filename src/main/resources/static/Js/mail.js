@@ -22,3 +22,7 @@
 //		}
 //	});
 //}
+function redirectDetail(mailId) {
+	redirect("/mail/getDetail?mailId=" + mailId)
+
+}

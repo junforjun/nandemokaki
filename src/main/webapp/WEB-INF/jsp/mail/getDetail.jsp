@@ -9,8 +9,7 @@
 <title>FIS Mail Server</title>
 <!-- bootstrap -->
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
-<script type="text/javascript" src="/Js/common.js"></script>
-<script type="text/javascript" src="/Js/mail.js"></script>
+<script src="/Js/mail.js"></script>
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 
@@ -20,10 +19,11 @@
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
 <link rel="stylesheet" href="/css/login.css">
 
+
+<script>
+
+</script>
 <style>
-.title {
-	cursor: pointer;
-}
 
 </style>
 
@@ -54,6 +54,8 @@
 		</div>
 	</nav>
 
+
+
 	<div class="container-fluid">
 		<div class="row">
 			<div class="col-sm-3 col-md-2 sidebar">
@@ -73,35 +75,20 @@
 				<h2 class="sub-header">받은편지함(${mailcnt})</h2>
 				<div class="table-responsive">
 					<table class="table">
-						<thead>
-							<tr>
-								<th style="width: 5%"><input type="checkbox" /></th>
-								<th style="width: 10%">보낸사람</th>
-								<th style="width: 50%">제목</th>
-								<th style="width: 10%">발송시간</th>
-								<th style="width: 10%">수신확인</th>
-								<th style="width: 10%">수신확인시간</th>
-							</tr>
-						</thead>
-					<c:forEach var="it" items="${mailList}" varStatus="status">
-							<thead class="cl">
-								<tr class="title" onclick="redirectDetail(${it.mailId})">
-									<td><input type="checkbox" /></td>
-									<td><c:out value="${it.from}" /></td>
-									<td><c:out value="${it.subject}" /></td>
-									<td><c:out value="${it.date}" /></td>
-									<td><c:out value="${it.isRead}" /></td>
-									<td><c:out value="${it.readTime}" /></td>
-								</tr>
-							</thead>
 
-					</c:forEach>
+					<tr><td><c:out value="${mailDetail.subject}" /></td></tr>
+					<tr><td><c:out value="${mailDetail.from}" /></td></tr>
+					<tr><td>CC :</td></tr>
+					<tr><td>Attched file :</td></tr>
+					<tr><td>${mailDetail.message}</td></tr>
+
+
+
 					</table>
 				</div>
 			</div>
 		</div>
 	</div>
-
 
 </body>
 </html>
