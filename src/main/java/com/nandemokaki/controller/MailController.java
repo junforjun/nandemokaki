@@ -1,5 +1,7 @@
 package com.nandemokaki.controller;
 
+import static com.nandemokaki.model.QInbox.*;
+
 import java.util.Date;
 import java.util.List;
 
@@ -17,9 +19,9 @@ import org.springframework.web.servlet.ModelAndView;
 import com.google.gson.Gson;
 import com.mysema.query.jpa.impl.JPAQuery;
 import com.nandemokaki.model.MailContent;
-import com.nandemokaki.model.QInbox;
 import com.nandemokaki.model.UserInfo;
 import com.nandemokaki.service.MailService;
+import com.nandemokaki.service.UserService;
 import com.nandemokaki.util.DateUtil;
 import com.nandemokaki.util.UserUtil;
 
@@ -31,27 +33,28 @@ public class MailController {
 	@Autowired
 	private MailService mailService;
 
+	@Autowired
+	private UserService userService;
+
 	@RequestMapping(value = "/mail", method = RequestMethod.GET)
 	public ModelAndView mailMain(ModelAndView mov, HttpSession session) throws Exception {
 
 		UserInfo user = UserUtil.getUser();
+		user = userService.readUser(user.userId);
 
-		QInbox inbox = QInbox.inbox;
-		long mailcnt = new JPAQuery(em).from(inbox).where(inbox.repositoryName.eq("test2")).orderBy(inbox.lastUpdated.desc()).count();
-
-
-		List<MailContent> mc = mailService.fetchMail(UserUtil.getUser());
+		List<MailContent> mc = mailService.fetchMail(user);
 
 		mc.forEach(v -> {
 			v.isRead = "○";
 			v.readTime = DateUtil.dateToStr(new Date());
 		});
 
-		mov.addObject("mailcnt", mailcnt);
+
+
+		mov.addObject("mailcnt", mc.size());
 		mov.addObject("mailList", mc);
 
 		session.setAttribute(user.userId, mc);
-		session.setAttribute("test2", mc);
 
 		return mov;
 	}
@@ -75,10 +78,24 @@ public class MailController {
 				.filter(v -> v.mailId == (Integer.parseInt(mailId)))
 				.findFirst().get();
 
-		mov.addObject("mailDetail", mailContenct);
+		long mailcnt = new JPAQuery(em)
+				.from(inbox)
+				.where(inbox.repositoryName.eq(UserUtil.getUser().userId))
+				.orderBy(inbox.lastUpdated.desc())
+				.count();
 
-		System.out.println("getDetail");
+		mov.addObject("mailDetail", mailContenct);
+		mov.addObject("mailcnt", mailcnt);
 
 		return mov;
 	}
+
+	@RequestMapping(value = "/mail/sendMail", method = RequestMethod.POST)
+	@ResponseBody
+	public String sendMail(MailContent mc, ModelAndView mov, HttpSession session) throws Exception {
+
+		return mailService.sendMail(mc, UserUtil.getUser());
+	}
 }
+
+

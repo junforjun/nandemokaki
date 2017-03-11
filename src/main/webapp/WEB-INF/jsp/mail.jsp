@@ -11,9 +11,16 @@
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script type="text/javascript" src="/Js/common.js"></script>
 <script type="text/javascript" src="/Js/mail.js"></script>
-<script
-	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+<script	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+<script src="/Js/tinymce/tinymce.min.js"></script>
+<script>tinymce.init({ });
 
+tinyMCE.init({
+	 selector:'textarea',
+    height : "480"
+});
+
+</script>
 
 <!-- CSS -->
 <link rel="stylesheet"
@@ -60,8 +67,7 @@
 				<ul class="nav nav-sidebar">
 					<li class="active"><a>편지함<span class="sr-only">(current)</span></a></li>
 					<li><a href="#">받은편지함(${mailcnt})</a></li>
-					<li><a href="#">편지쓰기</a></li>
-					<li><a href="#">로그인</a></li>
+					<li><a href="#" data-target="#layerpop" data-toggle="modal">편지쓰기</a></li>
 					<li><a href="#">서명</a></li>
 					<li><a href="#">관리자메뉴</a></li>
 				</ul>
@@ -83,7 +89,7 @@
 								<th style="width: 10%">수신확인시간</th>
 							</tr>
 						</thead>
-					<c:forEach var="it" items="${mailList}" varStatus="status">
+						<c:forEach var="it" items="${mailList}" varStatus="status">
 							<thead class="cl">
 								<tr class="title" onclick="redirectDetail(${it.mailId})">
 									<td><input type="checkbox" /></td>
@@ -95,12 +101,60 @@
 								</tr>
 							</thead>
 
-					</c:forEach>
+						</c:forEach>
 					</table>
+
+
+	<button class="btn btn-default" data-target="#layerpop" data-toggle="modal">모달출력버튼</button>
+					<br />
+
+					<div class="modal fade" id="layerpop">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<!-- header -->
+								<div class="modal-header">
+
+									<button type="button" class="close" data-dismiss="modal">×</button>
+
+									<!-- header title -->
+									<h4 class="modal-title">To</h4>
+									<input type="email" id="to" class="form-control" required autofocus >
+									<h4 class="modal-title">CC</h4>
+									<input type="email" id="cc" class="form-control" required >
+									<h4 class="modal-title">BCC</h4>
+									<input type="email" id="bcc" class="form-control" required >
+
+									<h4 class="modal-title">Subject</h4>
+									<input type="text" id="subject" class="form-control" required >
+
+								</div>
+								<!-- body -->
+								<div class="modal-body">
+
+								<textarea></textarea>
+
+								</div>
+								<!-- Footer -->
+								<div class="modal-footer">
+
+									<button type="button" class="btn btn-default" data-dismiss="modal" onclick="sendEmail()">SEND</button>
+									<button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+
+
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
+
+
+
+
+
+
 
 
 </body>

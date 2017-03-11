@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -17,40 +18,55 @@ import javax.mail.Multipart;
 import javax.mail.Part;
 import javax.mail.Session;
 import javax.mail.Store;
+import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.nandemokaki.model.MailContent;
 import com.nandemokaki.model.UserInfo;
 import com.nandemokaki.service.MailService;
 import com.nandemokaki.util.DateUtil;
+import com.nandemokaki.util.StrUt;
 
 @Service
 public class MailServiceImpl implements MailService {
 
+	@Value("${mail.store.protocol}")
+    private String protocol;
+
+	@Value("${mail.pop3.host}")
+    private String host;
+
+	@Value("${mail.pop3.port}")
+    private String port;
+
+	@Value("${mail.pop3.starttls.enable}")
+    private String starttls;
+
+
 	@Override
 	public List<MailContent> fetchMail(UserInfo user) throws Exception {
-		String host = "127.0.0.1";
-		String mailStoreType = "pop3";
-		String username = "test2";
-		String password = "test2";// change accordingly
-
 		List<MailContent> mailList = new ArrayList<>();
 
 		try {
 			// create properties field
 			Properties properties = new Properties();
-			properties.put("mail.store.protocol", mailStoreType);
+			properties.put("mail.store.protocol", protocol);
 			properties.put("mail.pop3.host", host);
-			properties.put("mail.pop3.port", "110");
-			properties.put("mail.pop3.starttls.enable", "true");
+			properties.put("mail.pop3.port", port);
+			properties.put("mail.pop3.starttls.enable", starttls);
+
 			Session emailSession = Session.getDefaultInstance(properties);
 
 			// create the POP3 store object and connect with the pop server
 			Store store = emailSession.getStore("pop3");
 
-			store.connect(host, username, password);
+			store.connect(host, user.userId, user.userPass);
 
 			// create the folder object and open it
 			Folder emailFolder = store.getFolder("INBOX");
@@ -68,7 +84,7 @@ public class MailServiceImpl implements MailService {
 
 				writePart(message, mail);
 
-				message.writeTo(System.out);
+//				message.writeTo(System.out);
 
 				// message.writeTo(System.out);
 				System.out.println(mail.toString());
@@ -85,6 +101,8 @@ public class MailServiceImpl implements MailService {
 			throw e;
 		}
 
+		Collections.reverse(mailList);
+
 		return mailList;
 	}
 
@@ -95,9 +113,53 @@ public class MailServiceImpl implements MailService {
 	}
 
 	@Override
-	public String sendMail(MailContent mail) {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
+	public String sendMail(MailContent mc, UserInfo user) {
+
+		String sender_addr = user.userId + "@localhost";
+		String sender_nm = user.userId + "@localhost";
+		if(StrUt.isEmpty(mc.subject)) {
+			mc.subject = "no title";
+		}
+
+		try {
+			Properties props = new Properties();
+
+			props.put("mail.smtp.host", host);
+			Session session = Session.getDefaultInstance(props, null);
+			MimeMessage message = new MimeMessage(session);
+			message.setFrom(new InternetAddress(sender_addr, sender_nm, "utf-8"));
+
+			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(mc.to));
+
+			message.setRecipients(Message.RecipientType.CC, InternetAddress.parse(mc.cc));
+
+			if(StrUt.isEmpty(mc.bcc)) {
+				message.setRecipients(Message.RecipientType.BCC, InternetAddress.parse(mc.bcc));
+			}
+
+			message.setSubject(mc.subject, "utf-8");
+
+			Multipart multipart = new MimeMultipart();
+			MimeBodyPart messageBodyPart = new MimeBodyPart();
+
+//				messageBodyPart.setText(content, "utf-8");
+			 messageBodyPart.setContent(mc.message, "text/html;charset=utf-8");
+
+			multipart.addBodyPart(messageBodyPart);
+			message.setSentDate(new java.util.Date());
+			message.setContent(multipart);
+
+			Transport transport = session.getTransport("smtp");
+
+			Transport.send(message);
+			transport.close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return e.toString();
+		}
+
+		return "1";
 	}
 
 	public void fetch(String pop3Host, String storeType, String user, String password) {
@@ -168,6 +230,7 @@ public class MailServiceImpl implements MailService {
 		} else {
 			Object o = p.getContent();
 			if (o instanceof String) {
+				mail.message = (String) p.getContent();
 				// System.out.println("This is a string");
 				// System.out.println("---------------------------");
 				// System.out.println((String) o);
@@ -207,7 +270,7 @@ public class MailServiceImpl implements MailService {
 		// TO
 		if ((a = m.getRecipients(Message.RecipientType.TO)) != null) {
 			for (int j = 0; j < a.length; j++) {
-				mail.to.add(a[j].toString());
+				mail.to = String.join(", ", a[j].toString());
 			}
 		}
 
@@ -219,12 +282,12 @@ public class MailServiceImpl implements MailService {
 		// ReplyTo
 		if ((a = m.getRecipients(Message.RecipientType.CC)) != null) {
 			for (int j = 0; j < a.length; j++) {
-				mail.cc.add(a[j].toString());
+				mail.cc =  String.join(", ", a[j].toString());
 			}
 		}
-		if ((a = m.getRecipients(Message.RecipientType.CC)) != null) {
-				mail.mailId = m.getMessageNumber();
-		}
+
+		mail.mailId = m.getMessageNumber();
+
 
 
 	}

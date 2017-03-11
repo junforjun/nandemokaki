@@ -13,5 +13,5 @@ public interface MailService {
 
 	public void deleteMail(UserInfo user);
 
-	public String sendMail(MailContent mail);
+	public String sendMail(MailContent mail, UserInfo user);
 }

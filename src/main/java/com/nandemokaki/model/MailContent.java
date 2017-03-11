@@ -1,15 +1,13 @@
 package com.nandemokaki.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MailContent implements Serializable {
 	public int mailId;
 	public String from;
-	public List<String> to = new ArrayList<>();
-	public List<String> cc = new ArrayList<>();
-
+	public String to;
+	public String cc;
+	public String bcc;
 
 	public String subject;
 	public String contentType;
@@ -18,11 +16,18 @@ public class MailContent implements Serializable {
 
 	public String isRead;
 	public String readTime;
+
 	@Override
 	public String toString() {
 		return "MailContent [mailId=" + mailId + ", from=" + from + ", to=" + to + ", cc=" + cc + ", subject=" + subject
 				+ ", contentType=" + contentType + ", date=" + date + ", message=" + message + ", isRead=" + isRead
 				+ ", readTime=" + readTime + "]";
+	}
+	public String getBcc() {
+		return bcc;
+	}
+	public void setBcc(String bcc) {
+		this.bcc = bcc;
 	}
 	public int getMailId() {
 		return mailId;
@@ -36,16 +41,16 @@ public class MailContent implements Serializable {
 	public void setFrom(String from) {
 		this.from = from;
 	}
-	public List<String> getTo() {
+	public String getTo() {
 		return to;
 	}
-	public void setTo(List<String> to) {
+	public void setTo(String to) {
 		this.to = to;
 	}
-	public List<String> getCc() {
+	public String getCc() {
 		return cc;
 	}
-	public void setCc(List<String> cc) {
+	public void setCc(String cc) {
 		this.cc = cc;
 	}
 	public String getSubject() {

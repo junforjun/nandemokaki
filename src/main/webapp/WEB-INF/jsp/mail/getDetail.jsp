@@ -27,7 +27,6 @@
 
 </style>
 
-
 </head>
 <body>
 	<nav class="navbar navbar-inverse navbar-fixed-top">
@@ -61,9 +60,8 @@
 			<div class="col-sm-3 col-md-2 sidebar">
 				<ul class="nav nav-sidebar">
 					<li class="active"><a>편지함<span class="sr-only">(current)</span></a></li>
-					<li><a href="#">받은편지함(${mailcnt})</a></li>
+					<li><a href="/mail">받은편지함(${mailcnt})</a></li>
 					<li><a href="#">편지쓰기</a></li>
-					<li><a href="#">로그인</a></li>
 					<li><a href="#">서명</a></li>
 					<li><a href="#">관리자메뉴</a></li>
 				</ul>
@@ -71,19 +69,13 @@
 
 
 			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-
-				<h2 class="sub-header">받은편지함(${mailcnt})</h2>
 				<div class="table-responsive">
-					<table class="table">
-
-					<tr><td><c:out value="${mailDetail.subject}" /></td></tr>
-					<tr><td><c:out value="${mailDetail.from}" /></td></tr>
-					<tr><td>CC :</td></tr>
+					<table class="table ">
+					<tr><td>Subject : <c:out value="${mailDetail.subject}" /></td></tr>
+					<tr><td>From : <c:out value="${mailDetail.from}" /></td></tr>
+					<tr><td>CC : <c:out value="${mailDetail.cc}" /></td></tr>
 					<tr><td>Attched file :</td></tr>
-					<tr><td>${mailDetail.message}</td></tr>
-
-
-
+					<tr><td><div>${mailDetail.message}</div></td></tr>
 					</table>
 				</div>
 			</div>

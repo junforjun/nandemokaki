@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,6 +21,7 @@ import com.nandemokaki.model.QUserInfo;
 import com.nandemokaki.model.UserAuthentication;
 import com.nandemokaki.model.UserInfo;
 import com.nandemokaki.service.UserService;
+import com.nandemokaki.util.StrUt;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -32,12 +32,20 @@ public class UserServiceImpl implements UserService {
 	private EntityManager em;
 
 	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+	public UserDetails loadUserByUsername(String username)  {
 		UserInfo user = readUser(username);
 
 		Login userDetails = new Login();
 		userDetails.setUsername(username);
 		userDetails.setPassword(user.userPass);
+
+		System.out.println(user.userPass);
+
+		try {
+			System.out.println(StrUt.digestString(user.userPass));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		userDetails.setAccountNonExpired(true);
 		userDetails.setAccountNonLocked(true);

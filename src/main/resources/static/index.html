@@ -24,15 +24,17 @@
 
    		<h2 class="form-signin-heading">Funble Studio Mail</h2>
 		<h3 class="form-signin-heading">Please sign in</h3>
-		<label for="inputEmail" class="sr-only">Email address</label>
-		<input type="email" id="username" class="form-control" placeholder="Email address" required autofocus >
+		<label for="inputEmail" class="sr-only">ID</label>
+		<input type="text" id="username" class="form-control" placeholder="ID" required autofocus >
 		<label for="inputPassword" class="sr-only">Password</label>
 		<input type="password" id="password" class="form-control" placeholder="Password" required>
 		<div class="checkbox">
-		  <label>
-			<input type="checkbox" value="remember-me"> Remember me 날 기억하셈
-		  </label>
+		 <label class="checkbox">
+        <input type="checkbox" value="remember-me" id="rememberMe" name="rememberMe"> Remember me
+      	</label>
 		</div>
+
+
 		<button class="btn btn-lg btn-primary btn-block" onclick="loginChk()">Sign in</button>
 
 	</div> <!-- /container -->

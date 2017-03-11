@@ -44,7 +44,7 @@ public class LoginController {
 
 			user = userService.readUser(login.getUsername());
 		} catch (AuthenticationException e) {
-			throw e;
+			return null;
 		}
 
         return new Gson().toJson(new AuthenticationToken(user.userId, userService.getAuthorities(user.userId), session.getId()));
