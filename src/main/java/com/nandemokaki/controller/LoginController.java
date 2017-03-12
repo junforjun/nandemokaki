@@ -44,11 +44,37 @@ public class LoginController {
 
 			user = userService.readUser(login.getUsername());
 		} catch (AuthenticationException e) {
+			e.printStackTrace();
 			return null;
 		}
 
         return new Gson().toJson(new AuthenticationToken(user.userId, userService.getAuthorities(user.userId), session.getId()));
-
-
 	}
+
+
+	@RequestMapping(value="/regUser", method=RequestMethod.POST,produces = "text/plain;charset=UTF-8")
+	@ResponseBody
+	public String regUser(Login user, HttpSession session) {
+
+		if(user.getUsername().length() < 4) {
+			return "ID length must input min to 4 char";
+		}
+
+		if(user.getPassword().length() < 4) {
+			return "Password length must input min to 4 char";
+		}
+
+		if(user.getName().length() < 2) {
+			return "Username length must input min to 2 char";
+		}
+
+		try {
+			userService.createUser(user);
+		} catch (Exception e) {
+			return "Duplicate Member";
+		}
+
+		return "1";
+	}
+
 }

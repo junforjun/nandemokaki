@@ -1,5 +1,7 @@
 package com.nandemokaki.service.impl;
 
+import static com.nandemokaki.model.QUserInfo.*;
+
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -12,14 +14,18 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mysema.query.jpa.JPQLQuery;
 import com.mysema.query.jpa.impl.JPAQuery;
 import com.nandemokaki.model.Login;
 import com.nandemokaki.model.QUserAuthentication;
-import com.nandemokaki.model.QUserInfo;
 import com.nandemokaki.model.UserAuthentication;
 import com.nandemokaki.model.UserInfo;
+import com.nandemokaki.model.Users;
+import com.nandemokaki.model.db.UserAuthentication_DB;
+import com.nandemokaki.model.db.UserInfo_DB;
+import com.nandemokaki.model.db.Users_DB;
 import com.nandemokaki.service.UserService;
 import com.nandemokaki.util.StrUt;
 
@@ -30,6 +36,15 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private EntityManager em;
+
+	@Autowired
+	private UserInfo_DB userInfoDb;
+
+	@Autowired
+	private UserAuthentication_DB userAuthenticationDb;
+
+	@Autowired
+	private Users_DB UsersDb;
 
 	@Override
 	public UserDetails loadUserByUsername(String username)  {
@@ -75,20 +90,37 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserInfo readUser(String username) {
-		JPQLQuery query = new JPAQuery(em);
-
-		QUserInfo userInfo = QUserInfo.userInfo;
-
-		UserInfo user = query.from(userInfo).where(userInfo.userId.eq(username))
+		UserInfo user =  new JPAQuery(em).from(userInfo).where(userInfo.userId.eq(username))
 				.uniqueResult(userInfo);
 
 		return user;
 	}
 
 	@Override
-	public void createUser(UserInfo user) {
-		// TODO 自動生成されたメソッド・スタブ
+	@Transactional
+	public void createUser(Login user) throws Exception {
 
+		UserInfo userInfo = new UserInfo();
+
+		userInfo.userId = user.getUsername();
+		userInfo.userPass = passwordEncoder.encode(user.getPassword());
+
+		userInfoDb.save(userInfo);
+
+		UserAuthentication ua = new UserAuthentication();
+		ua.userId = user.getUsername();
+		ua.userAuth = "1";
+
+		userAuthenticationDb.save(ua);
+
+		Users mailAccount = new Users();
+		mailAccount.username = user.getUsername();
+		mailAccount.pwdhash = StrUt.digestString(userInfo.userPass);
+		mailAccount.pwdalgorithm = "SHA";
+		mailAccount.useforwarding = 0;
+		mailAccount.usealias = 0;
+
+		UsersDb.save(mailAccount);
 	}
 
 	@Override

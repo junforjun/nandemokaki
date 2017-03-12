@@ -137,7 +137,7 @@ tinyMCE.init({
 								<!-- Footer -->
 								<div class="modal-footer">
 
-									<button type="button" class="btn btn-default" data-dismiss="modal" onclick="sendEmail()">SEND</button>
+									<button type="button" class="btn btn-success" data-dismiss="modal" onclick="sendEmail()">SEND</button>
 									<button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
 
 
