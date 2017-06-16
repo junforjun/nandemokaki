@@ -1,7 +1,5 @@
 package com.nandemokaki.controller;
 
-import static com.nandemokaki.model.QInbox.*;
-
 import java.util.Date;
 import java.util.List;
 
@@ -17,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
-import com.mysema.query.jpa.impl.JPAQuery;
 import com.nandemokaki.model.MailContent;
 import com.nandemokaki.model.UserInfo;
 import com.nandemokaki.service.MailService;
@@ -78,14 +75,14 @@ public class MailController {
 				.filter(v -> v.mailId == (Integer.parseInt(mailId)))
 				.findFirst().get();
 
-		long mailcnt = new JPAQuery(em)
-				.from(inbox)
-				.where(inbox.repositoryName.eq(UserUtil.getUser().userId))
-				.orderBy(inbox.lastUpdated.desc())
-				.count();
-
-		mov.addObject("mailDetail", mailContenct);
-		mov.addObject("mailcnt", mailcnt);
+//		long mailcnt = new JPAQuery(em)
+//				.from(inbox)
+//				.where(inbox.repositoryName.eq(UserUtil.getUser().userId))
+//				.orderBy(inbox.lastUpdated.desc())
+//				.count();
+//
+//		mov.addObject("mailDetail", mailContenct);
+//		mov.addObject("mailcnt", mailcnt);
 
 		return mov;
 	}
